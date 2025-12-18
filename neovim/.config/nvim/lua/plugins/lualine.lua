@@ -1,6 +1,5 @@
 return {
 	"nvim-lualine/lualine.nvim",
-	event = "VimEnter",
 	dependencies = { "nvim-tree/nvim-web-devicons", "letieu/harpoon-lualine" },
 	config = function()
 		local lualine = require("lualine")
@@ -58,7 +57,7 @@ return {
 					"git",
 				},
 				lualine_x = {
-					"mason",
+					-- "mason",
 					"lazy",
 				},
 				lualine_y = {

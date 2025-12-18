@@ -1,41 +1,33 @@
+-- Bootstrap lazy.nvim
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
-if not vim.uv.fs_stat(lazypath) then
+if not (vim.uv or vim.loop).fs_stat(lazypath) then
 	local lazyrepo = "https://github.com/folke/lazy.nvim.git"
-	local out = vim.fn.system({
-		"git",
-		"clone",
-		"--filter=blob:none",
-		"--branch=stable",
-		lazyrepo,
-		lazypath,
-	})
+	local out = vim.fn.system({ "git", "clone", "--filter=blob:none", "--branch=stable", lazyrepo, lazypath })
 	if vim.v.shell_error ~= 0 then
 		vim.api.nvim_echo({
 			{ "Failed to clone lazy.nvim:\n", "ErrorMsg" },
 			{ out, "WarningMsg" },
+			{ "\nPress any key to exit..." },
 		}, true, {})
-		return
+		vim.fn.getchar()
+		os.exit(1)
 	end
 end
 vim.opt.rtp:prepend(lazypath)
 
 local status_ok, lazy = pcall(require, "lazy")
 if not status_ok then
-	vim.api.nvim_echo({ "Installed lazy.nvim, please restart neovim" }, true, {})
+	vim.api.nvim_echo({ "Installed lazy.nvim, please restart neovim." }, true, {})
 	return
 end
 
-lazy.setup({
-	{ import = "plugins" },
-	{ import = "plugins.lsp" },
-	{ import = "plugins.dap" },
-}, {
+lazy.setup({ { import = "plugins" } }, {
 	checker = {
 		enabled = true,
 		notify = false,
 	},
 	change_detection = {
+		enabled = true,
 		notify = false,
 	},
-	lockfile = vim.fn.stdpath("config") .. "/lua/plugins/lazy-lock.json",
 })
