@@ -1,6 +1,8 @@
 return {
 	"nvim-lualine/lualine.nvim",
-	dependencies = { "nvim-tree/nvim-web-devicons", "letieu/harpoon-lualine" },
+	dependencies = {
+		{ "nvim-mini/mini.icons", opts = {} },
+	},
 	config = function()
 		local lualine = require("lualine")
 		local utils = require("lualine.utils")
@@ -27,11 +29,10 @@ return {
 					right = "",
 				},
 				section_separators = {
-					left = "", -- e0c6
-					right = "", -- e0c7
+					left = "", -- e0c6
+					right = "", -- e0c7
 				},
 				always_divide_middle = false,
-				disabled_filetypes = { "NvimTree" },
 			},
 			sections = {
 				lualine_a = {
@@ -54,11 +55,10 @@ return {
 					"encodings",
 					"treesitter",
 					"venv",
-					"git",
+					"wordcount",
 				},
 				lualine_x = {
-					-- "mason",
-					"lazy",
+					"git",
 				},
 				lualine_y = {
 					"lsp_server",
@@ -75,11 +75,13 @@ return {
 					"file",
 				},
 				lualine_x = {
-					"harpoon",
 					"position",
 				},
 				lualine_y = {},
 				lualine_z = {},
+			},
+			disabled_filetypes = {
+				"undotree",
 			},
 		})
 	end,

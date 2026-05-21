@@ -1,4 +1,4 @@
-local functions = require("utils.functions")
+local f = require("utils.functions")
 
 local F = {}
 
@@ -81,7 +81,7 @@ function F.file_button(filename, shortcut, short_filename, highlight_opts)
 	local shortcut_colour = highlight_opts.shortcut or "Keyword"
 
 	local parent_directory = short_filename:match(".*[/\\]") or ""
-	local icon, icon_colour = functions.get_icon(filename)
+	local icon, icon_colour = f.get_icon(filename)
 	local text = icon .. "  " .. short_filename
 
 	local highlights = {}
@@ -101,17 +101,14 @@ function F.file_button(filename, shortcut, short_filename, highlight_opts)
 	return button
 end
 
---- @param start integer? optional default 1
---- @param stop integer? optional default 9
---- @param cwd string? optional current working directory
+--- @param cwd string
+--- @param files table
 --- @param highlight_opts table? optional settings: {text, file, shortcut}
-function F.most_recent_files_buttons(start, stop, cwd, highlight_opts)
-	local path_status, path = pcall(require, "plenary.path")
+function F.get_mru_buttons(cwd, files, highlight_opts)
 	local shortcuts = { "a", "s", "d", "z", "x" }
 	local max_file_chars = 35
 
 	local buttons = {}
-	local files = functions.get_most_recent_files(start, stop, cwd)
 	for index, filename in ipairs(files) do
 		local short_filename
 		if cwd then
@@ -120,15 +117,15 @@ function F.most_recent_files_buttons(start, stop, cwd, highlight_opts)
 			short_filename = vim.fn.fnamemodify(filename, ":~")
 		end
 
-		while #short_filename > max_file_chars and path_status do
-			short_filename = path.new(short_filename):shorten(1, { -2, -1 })
+		if #short_filename > max_file_chars then
+			short_filename = vim.fn.pathshorten(short_filename)
 		end
 
 		local shortcut = ""
 		if index <= #shortcuts then
 			shortcut = shortcuts[index]
 		else
-			shortcut = tostring(index + start - 1 - #shortcuts)
+			shortcut = tostring(index - 1 - #shortcuts)
 		end
 
 		local button = F.file_button(filename, " " .. shortcut, short_filename, highlight_opts)

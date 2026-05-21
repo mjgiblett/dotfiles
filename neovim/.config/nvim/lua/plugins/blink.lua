@@ -1,71 +1,76 @@
 return {
-	{ "L3MON4D3/LuaSnip", build = "make install_jsregexp" },
 	{
 		"saghen/blink.cmp",
 		dependencies = {
+			"saghen/blink.lib",
 			"rafamadriz/friendly-snippets",
+			"Kaiser-Yang/blink-cmp-dictionary",
 		},
-		version = "*",
-		config = function()
-			require("blink.cmp").setup({
-				snippets = { preset = "luasnip" },
-				signature = { enabled = true },
-				appearance = {
-					use_nvim_cmp_as_default = false,
-					nerd_font_variant = "normal",
-				},
-				sources = {
-					default = { "lazydev", "lsp", "path", "buffer", "snippets" },
-					providers = {
-						lazydev = {
-							name = "LazyDev",
-							module = "lazydev.integrations.blink",
-							score_offset = 100,
-						},
-						cmdline = {
-							min_keyword_length = 2,
-						},
-					},
-				},
-				keymap = {
-					["<C-f>"] = {},
-				},
-				cmdline = {
-					enabled = false,
-					completion = { menu = { auto_show = true } },
-					keymap = {
-						["<CR>"] = { "accept_and_enter", "fallback" },
-					},
-				},
-				completion = {
-					menu = {
-						border = "rounded",
-						scrolloff = 1,
-						scrollbar = false,
-						draw = {
-							padding = 1,
-							gap = 1,
-							columns = {
-								{ "kind_icon" },
-								{ "label", "label_description", gap = 1 },
-								{ "kind" },
-								{ "source_name" },
-							},
-						},
-					},
-					documentation = {
-						window = {
-							border = "rounded",
-							scrollbar = false,
-							winhighlight = "Normal:BlinkCmpDoc,FloatBorder:BlinkCmpDocBorder,EndOfBuffer:BlinkCmpDoc",
-						},
-						auto_show = true,
-						auto_show_delay_ms = 500,
-					},
-				},
-			})
-
-			require("luasnip.loaders.from_vscode").lazy_load()
+		build = function()
+			require("blink.cmp").build():wait(60000)
 		end,
+		---@module 'blink.cmp'
+		---@type blink.cmp.Config
+		opts = {
+			sources = {
+				default = { "lsp", "buffer", "snippets", "path", "dictionary" },
+
+				providers = {
+					snippets = {
+						opts = {
+							friendly_snippets = true,
+						},
+					},
+					lazydev = {
+						name = "LazyDev",
+						module = "lazydev.integrations.blink",
+						score_offset = 100,
+					},
+					dictionary = {
+						module = "blink-cmp-dictionary",
+						name = "Dict",
+						score_offset = 20,
+						enabled = true,
+						max_items = 8,
+						min_keyword_length = 3,
+						opts = {
+							force_fallback = true,
+						},
+					},
+				},
+			},
+
+			keymap = {
+				preset = "default",
+				["<C-space>"] = { "show", "show_documentation", "hide_documentation" },
+				["<C-e>"] = { "hide", "fallback" },
+				["<C-s>"] = { "select_and_accept", "fallback" },
+
+				["<Up>"] = { "select_prev", "fallback" },
+				["<Down>"] = { "select_next", "fallback" },
+				["<C-p>"] = { "select_prev", "fallback_to_mappings" },
+				["<C-n>"] = { "select_next", "fallback_to_mappings" },
+
+				["<C-b>"] = { "scroll_documentation_up", "fallback" },
+				["<C-f>"] = { "scroll_documentation_down", "fallback" },
+
+				["<Tab>"] = { "snippet_forward", "fallback" },
+				["<S-Tab>"] = { "snippet_backward", "fallback" },
+
+				["<C-k>"] = { "show_signature", "hide_signature", "fallback" },
+
+				["<S-k>"] = { "scroll_documentation_up", "fallback" },
+				["<S-j>"] = { "scroll_documentation_down", "fallback" },
+			},
+		},
+	},
+	{
+		"folke/lazydev.nvim",
+		ft = "lua",
+		opts = {
+			library = {
+				{ path = "${3rd}/luv/library", words = { "vim%.uv" } },
+			},
+		},
 	},
 }

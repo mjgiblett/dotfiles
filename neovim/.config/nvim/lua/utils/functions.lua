@@ -16,17 +16,13 @@ function F.get_extension(filename)
 end
 
 --- @param filename string
---- @param default boolean? optional
-function F.get_icon(filename, default)
-	if default == nil then
-		default = true
-	end
-	local status, devicons = pcall(require, "nvim-web-devicons")
+function F.get_icon(filename)
+	local status, icons = pcall(require, "mini.icons")
 	if not status then
 		return "?"
 	end
 	local extension = F.get_extension(filename)
-	return devicons.get_icon(filename, extension, { default = default })
+	return icons.get("extension", extension)
 end
 
 --- @param dir string
@@ -116,46 +112,6 @@ function F.echo_table_values(table)
 	end
 end
 
---- @param start integer? optional default 1
---- @param stop integer? optional default 9
---- @param cwd string? optional current working directory
---- @param opts table? optional
-function F.get_most_recent_files(start, stop, cwd, opts)
-	local default_mru_ignore = { "gitcommit" }
-	local default_opts = {
-		ignore = function(ignore_path, ext)
-			return (string.find(ignore_path, "COMMIT_EDITMSG")) or (vim.tbl_contains(default_mru_ignore, ext))
-		end,
-	}
-	local files = {}
-
-	start = start or 1
-	stop = stop or 9
-	opts = opts or default_opts
-
-	for _, v in pairs(vim.v.oldfiles) do
-		if #files == stop then
-			break
-		end
-
-		local is_cwd
-		if not cwd then
-			is_cwd = true
-		else
-			is_cwd = vim.startswith(v, cwd)
-		end
-
-		local is_readable = vim.fn.filereadable(v) == 1
-		local ignore = (opts.ignore and opts.ignore(v, F.get_extension(v))) or false
-
-		if is_cwd and is_readable and not ignore then
-			files[#files + 1] = v
-		end
-	end
-
-	return files
-end
-
 --- @param str string
 --- @param len integer
 --- @param left string? optional
@@ -165,7 +121,7 @@ function F.centre_with_padding(str, len, left, right)
 	right = right or left
 
 	local content = left .. str .. right
-	local content_length = vim.str_utfindex(content)
+	local content_length = vim.fn.strdisplaywidth(content)
 	if len < content_length then
 		print("Target length is too short to fit the string and borders.")
 		return content

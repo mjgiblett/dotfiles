@@ -13,20 +13,20 @@ local default_options = {
 		color = utils.get_mode_color,
 	},
 	indicators = {
-		"󰰡", -- f0c21
-		"󰰰", -- f0c30
-		"󰰒", -- f0c12
-		"󰰏", -- f0c0f
+		"󰎦", -- f03a6
+		"󰎩", -- f03a9
+		"󰎬", -- f03ac
+		"󰎮", -- f03ae
 	},
 	active_indicators = {
-		"󰬚", -- f0b1a
-		"󰬟", -- f0b1f
-		"󰬕", -- f0b15
-		"󰬔", -- f0b14
+		"󰎤", -- f03a4
+		"󰎧", -- f03a7
+		"󰎪", -- f03aa
+		"󰎭", -- f03ad
 	},
 	_separator = " ",
-	-- separator = { left = "", right = "" },
 	color_active = utils.get_mode_color,
+	no_harpoon = "", -- f071
 }
 
 function M:init(options)

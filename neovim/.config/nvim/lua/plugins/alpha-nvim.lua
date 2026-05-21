@@ -1,15 +1,15 @@
-local ui = require("utils.ui")
-local utils = require("utils.functions")
-
-local padding = function(val)
-	return { type = "padding", val = val }
-end
-
-local alpha = {
+return {
 	"goolord/alpha-nvim",
 	event = "VimEnter",
-	dependencies = { "nvim-tree/nvim-web-devicons", "nvim-lua/plenary.nvim" },
+	dependencies = { "nvim-mini/mini.icons" },
 	config = function()
+		local ui = require("utils.ui")
+		local utils = require("utils.functions")
+
+		local padding = function(val)
+			return { type = "padding", val = val }
+		end
+
 		local AlphaHeader = "AlphaHeader"
 		local AlphaFooter = "AlphaFooter"
 		local AlphaHeading = "AlphaHeading"
@@ -22,16 +22,6 @@ local alpha = {
 			val = "󱁤  Tools",
 			opts = { position = "center", hl = AlphaHeading },
 		}
-		local heading_keys = {
-			type = "text",
-			val = "  Key Bindings",
-			opts = { position = "center", hl = AlphaHeading },
-		}
-		local heading_files = {
-			type = "text",
-			val = "󰈢  Recent Files",
-			opts = { position = "center", hl = AlphaHeading },
-		}
 
 		local plugins_count = 0
 		local lazy_ok, lazy = pcall(require, "lazy")
@@ -39,7 +29,7 @@ local alpha = {
 			plugins_count = lazy.stats().count
 		end
 		local plugins = "╔═   " .. plugins_count .. " plugins enabled ═╗"
-		local len = vim.str_utfindex(plugins)
+		local len = vim.fn.strdisplaywidth(plugins)
 		local date = utils.centre_with_padding("  " .. os.date("%a %d %b"), len, "║")
 		local theme_name = utils.centre_with_padding(vim.g.colorscheme, len, "╚══", "══╝")
 
@@ -59,6 +49,11 @@ local alpha = {
 			opts = { position = "center", hl = AlphaHeaderLabel },
 		}
 
+		local heading_keys = {
+			type = "text",
+			val = "  Key Bindings",
+			opts = { position = "center", hl = AlphaHeading },
+		}
 		local tools = {
 			type = "group",
 			val = {
@@ -72,21 +67,28 @@ local alpha = {
 			val = {
 				heading_keys,
 				ui.button("e", "  New File", "<cmd>ene<CR>", button_colours),
-				ui.button("SPC ee", "  Toggle File Explorer", "<cmd>NvimTreeToggle<CR>", button_colours),
-				ui.button("SPC ff", "󰱼  Find File", "<cmd>Telescope find_files<CR>", button_colours),
-				ui.button("SPC fs", "  Find Word", "<cmd>Telescope live_grep<CR>", button_colours),
-				ui.button("SPC wr", "󰦛  Restore Session", "<cmd>SessionRestore<CR>", button_colours),
+				ui.button("-", "  Toggle File Explorer", "<cmd>Oil<CR>", button_colours),
+				ui.button("SPC ff", "󰱼  Find File", "<cmd>FzfLua files<CR>", button_colours),
 				ui.button("q", "  Quit NVIM", "<cmd>qa<CR>", button_colours),
 			},
 		}
+
+		local heading_files = {
+			type = "text",
+			val = "󰈢  Recent Files",
+			opts = { position = "center", hl = AlphaHeading },
+		}
+		local cwd = vim.fn.getcwd()
+		local mru = require("alpha.utils").get_mru(cwd, 5)
+		local mru_buttons = ui.get_mru_buttons(cwd, mru, button_colours)
 		local recent_files = { type = "group", val = {} }
-		local files_buttons = ui.most_recent_files_buttons(1, 5, vim.fn.getcwd(), button_colours)
-		if #files_buttons.val > 0 then
+		if #mru_buttons.val > 0 then
 			recent_files.val = {
 				heading_files,
-				files_buttons,
+				mru_buttons,
 			}
 		end
+
 		local v = vim.version()
 		local version = "  " .. v.major .. "." .. v.minor .. "." .. v.patch
 		local footer = {
@@ -119,5 +121,3 @@ local alpha = {
 		vim.cmd([[autocmd FileType alpha setlocal nofoldenable]])
 	end,
 }
-
-return alpha

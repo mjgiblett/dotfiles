@@ -2,43 +2,34 @@ return {
 	"folke/which-key.nvim",
 	event = "VeryLazy",
 	opts = {
-		preset = "helix",
-		delay = 300,
+		preset = "modern",
+		delay = 100,
 		icons = {
-			rules = false,
-			breadcrumb = " ", -- symbol used in the command line area that shows your active key combo
-			separator = "󱦰  ", -- symbol used between a key and it's label
-			group = "󰹍 ", -- symbol prepended to a group
-		},
-		plugins = {
-			spelling = {
-				enabled = false,
-			},
-		},
-		win = {
-			height = {
-				max = math.huge,
-			},
+			group = "󰹍 ",
 		},
 		spec = {
+			{ "<leader>c", group = "Code" },
+			{ "<leader>f", group = "Find" },
+			{ "<leacer>g", group = "Git" },
+			{ "<leader>r", group = "Run code" },
+			{ "<leader>q", group = "Quarto" },
 			{
-				mode = { "n", "v" },
-				{ "<leader>f", group = "Find" },
-				{ "<leader>G", group = "Git" },
-				{ "<leader>g", group = "Gitsigns" },
-				{ "<leader>R", group = "Replace" },
-				{ "<leader>l", group = "LSP" },
-				{ "<leader>c", group = "LSP (Trouble)" },
-				{ "<leader>t", group = "Test" },
-				{ "<leader>D", group = "Debugger" },
-				{ "<leader>s", group = "Search" },
-				{ "<leader>x", group = "diagnostics/quickfix (Trouble)" },
-				{ "<leader>u", group = "Toggle Features" },
-				{ "<leader>W", group = "Workspace" },
-				{ "[", group = "prev" },
-				{ "]", group = "next" },
-				{ "g", group = "goto" },
+				"<leader>qE",
+				function()
+					require("otter").export(true)
+				end,
+				desc = "Export with overwrite",
 			},
+			{ "<leader>qa", ":QuartoActivate<cr>", desc = "activate" },
+			{ "<leader>qe", require("otter").export, desc = "export" },
+			{ "<leader>qh", ":QuartoHelp ", desc = "help" },
+			{ "<leader>qp", ":lua require'quarto'.quartoPreview()<cr>", desc = "preview" },
+			{ "<leader>qu", ":lua require'quarto'.quartoUpdatePreview()<cr>", desc = "update preview" },
+			{ "<leader>qq", ":lua require'quarto'.quartoClosePreview()<cr>", desc = "quiet preview" },
+			{ "<leader>qr", group = "run" },
+			{ "<leader>qra", ":QuartoSendAll<cr>", desc = "run all" },
+			{ "<leader>qrb", ":QuartoSendBelow<cr>", desc = "run below" },
+			{ "<leader>qrr", ":QuartoSendAbove<cr>", desc = "to cursor" },
 		},
 	},
 	keys = {

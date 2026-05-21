@@ -2,19 +2,16 @@ return {
 	{
 		"lewis6991/gitsigns.nvim",
 		event = { "BufReadPre", "BufNewFile" },
-		config = function()
-			require("gitsigns").setup({
-				signs = {
-					add = { text = "│" },
-					change = { text = "│" },
-					delete = { text = "_" },
-					topdelete = { text = "‾" },
-					changedelete = { text = "~" },
-					untracked = { text = "┆" },
-				},
-			})
-			vim.cmd([[highlight GitSignsAdd guibg=NONE ]])
-		end,
+		opts = {
+			signs = {
+				add = { text = "│" },
+				change = { text = "│" },
+				delete = { text = "_" },
+				topdelete = { text = "‾" },
+				changedelete = { text = "~" },
+				untracked = { text = "┆" },
+			},
+		},
 	},
 	{
 		"tpope/vim-fugitive",
@@ -26,14 +23,6 @@ return {
 			{ "<leader>gg", vim.cmd.Git, desc = "Git open menu" },
 			{ "<leader>go", "<cmd>Git push origin main<cr>", desc = "Git push origin main" },
 			{ "<leader>gp", "<cmd>Git pull<cr>", desc = "Git pull" },
-		},
-	},
-	{
-		"rbong/vim-flog",
-		event = "VeryLazy",
-		cmd = { "Flog", "Flogsplit", "Floggit" },
-		dependencies = {
-			"tpope/vim-fugitive",
 		},
 	},
 }

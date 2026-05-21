@@ -6,7 +6,17 @@ vim.g.colorscheme = "random"
 vim.g.header = "random"
 vim.g.user_name = "Matt"
 
-vim.g.python3_host_prog = vim.fn.exepath("python3")
+local py = vim.fn.exepath("python3")
+if py ~= "" then
+	vim.g.python3_host_prog = py
+end
+
+-- undo file
+opt.swapfile = false
+opt.backup = false
+local state = os.getenv("XDG_STATE_HOME") or (os.getenv("HOME") .. "/.local/state")
+opt.undodir = state .. "/nvim/undodir"
+opt.undofile = true
 
 opt.guicursor = ""
 opt.fillchars = { eob = " " }
@@ -24,13 +34,10 @@ opt.autoindent = true
 opt.smartindent = true
 
 -- line wrapping
+opt.textwidth = 80
 opt.wrap = false
-
--- undo file
-opt.swapfile = false
-opt.backup = false
-opt.undodir = os.getenv("XDG_STATE_HOME") .. "/nvim/undodir"
-opt.undofile = true
+opt.linebreak = false
+opt.showbreak = "↪"
 
 -- search
 opt.hlsearch = false
